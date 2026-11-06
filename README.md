@@ -201,6 +201,26 @@ Behavior:
 - `GET /api/auth/me` and protected API routes return `401` when there is no valid session.
 - Email confirmation is supported by the contract. For the course demo, consider disabling **Confirm email** in Supabase Auth → Providers → Email to avoid email-sending rate limits during registration. If it is enabled, the registration response returns `requiresEmailConfirmation: true` and the UI must show a confirmation message.
 
+## Conversation API
+
+| Method   | Endpoint                 | Purpose                                       |
+| -------- | ------------------------ | --------------------------------------------- |
+| `GET`    | `/api/conversations`     | List the authenticated user's conversations   |
+| `GET`    | `/api/conversations/:id` | Get an owned conversation and its messages    |
+| `PATCH`  | `/api/conversations/:id` | Rename an owned conversation                  |
+| `DELETE` | `/api/conversations/:id` | Delete an owned conversation and its messages |
+
+Behavior:
+
+- All endpoints require an authenticated session.
+- Users can only access their own conversations.
+- Missing or foreign conversations return `404 NOT_FOUND`.
+- Conversation lists are ordered by `updatedAt` descending.
+- `limit` defaults to `20` and supports `1–100`.
+- Conversation detail returns up to the 200 most recent messages in chronological order.
+- Deleting a conversation cascades to its messages.
+- Mutating requests validate the request origin.
+
 ## Team responsibilities
 
 ### Developer 1 — Frontend and integration
@@ -231,8 +251,7 @@ The shared API contract is available at [`docs/api-contracts.md`](docs/api-contr
 
 The README will be expanded as the following are implemented:
 
-- DeepSeek integration.
-- Chat and conversation APIs.
+- Chat API and DeepSeek integration.
 - Testing strategy.
 - Deployment.
 - Evaluation checklist.
