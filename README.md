@@ -178,6 +178,29 @@ Useful database commands:
 
 Conversations cascade-delete their messages. Deleting a user cascades to their conversations. Conversation and message indexes support history ordering and ownership queries.
 
+## Authentication
+
+Authentication uses Supabase Auth with server-managed cookies through `@supabase/ssr`. Session cookies are `HttpOnly`, `SameSite=Lax`, and `Secure` in production.
+
+Available endpoints:
+
+| Method | Endpoint             | Purpose                              |
+| ------ | -------------------- | ------------------------------------ |
+| `POST` | `/api/auth/register` | Create an account and public profile |
+| `POST` | `/api/auth/login`    | Create a session                     |
+| `POST` | `/api/auth/logout`   | Clear the session                    |
+| `GET`  | `/api/auth/me`       | Return the current user and role     |
+
+Behavior:
+
+- New accounts receive the `USER` role.
+- The public `users` profile uses the Supabase Auth user UUID.
+- Protected routes `/chat`, `/history`, and `/admin` are guarded by `src/proxy.ts` for optimistic redirects and session refresh.
+- API routes and server layouts must still verify authorization; the proxy is not the only security boundary.
+- Server code can use `getCurrentUser`, `requireUser`, and `requireAdmin` from `src/server/auth/current-user.ts`.
+- `GET /api/auth/me` and protected API routes return `401` when there is no valid session.
+- Email confirmation is supported by the contract. For the course demo, consider disabling **Confirm email** in Supabase Auth → Providers → Email to avoid email-sending rate limits during registration. If it is enabled, the registration response returns `requiresEmailConfirmation: true` and the UI must show a confirmation message.
+
 ## Team responsibilities
 
 ### Developer 1 — Frontend and integration
@@ -208,8 +231,8 @@ The shared API contract is available at [`docs/api-contracts.md`](docs/api-contr
 
 The README will be expanded as the following are implemented:
 
-- Authentication flow.
 - DeepSeek integration.
+- Chat and conversation APIs.
 - Testing strategy.
 - Deployment.
 - Evaluation checklist.
