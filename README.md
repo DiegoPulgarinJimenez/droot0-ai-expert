@@ -21,6 +21,7 @@ The project has been bootstrapped with Next.js, TypeScript, Tailwind CSS, pnpm, 
 | Backend         | Next.js Route Handlers |
 | Database        | Supabase PostgreSQL    |
 | ORM             | Prisma                 |
+| Validation      | Zod                    |
 | AI provider     | DeepSeek API           |
 | Deployment      | Vercel                 |
 | Version control | Git and GitHub         |
@@ -113,8 +114,8 @@ Open [http://localhost:3000](http://localhost:3000).
 
 The team works with one feature per branch and pull request:
 
-- `developer-1/<feature-name>` for frontend work.
-- `developer-2/<feature-name>` for backend work.
+- `feat/<feature-name>` for feature work.
+- `fix/<fix-name>` for fixes.
 - `main` remains stable.
 - API contracts are agreed before frontend integration.
 - Frontend and backend progress in parallel using shared contracts and test fixtures.
@@ -161,13 +162,14 @@ Additional Supabase service credentials, if required for seeding, must remain se
 
 ## Documentation
 
+The shared API contract is available at [`docs/api-contracts.md`](docs/api-contracts.md).
+
 The README will be expanded as the following are implemented:
 
 - Supabase setup.
 - Prisma migrations and seed data.
 - Authentication flow.
 - DeepSeek integration.
-- API contracts.
 - Testing strategy.
 - Deployment.
 - Evaluation checklist.
