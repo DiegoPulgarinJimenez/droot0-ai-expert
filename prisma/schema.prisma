@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+model User {
+  id        String   @id @db.Uuid
+  email     String   @unique @db.VarChar(254)
+  name      String   @db.VarChar(80)
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  conversations          Conversation[]
+  assistantConfigUpdates AssistantConfig[] @relation("AssistantConfigUpdatedBy")
+
+  @@map("users")
+}
+
+model Conversation {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  title     String   @db.VarChar(120)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages Message[]
+
+  @@index([userId, updatedAt])
+  @@map("conversations")
+}
+
+model Message {
+  id             String      @id @default(uuid()) @db.Uuid
+  conversationId String      @db.Uuid
+  role           MessageRole
+  content        String      @db.Text
+  createdAt      DateTime    @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}
+
+model AssistantConfig {
+  id           String   @id @default("default") @db.VarChar(100)
+  name         String   @db.VarChar(80)
+  systemPrompt String   @db.Text
+  model        String   @db.VarChar(100)
+  temperature  Float    @default(0.3)
+  maxTokens    Int      @default(2048)
+  updatedAt    DateTime @updatedAt
+  updatedById  String?  @db.Uuid
+
+  updatedBy User? @relation("AssistantConfigUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@map("assistant_configs")
+}

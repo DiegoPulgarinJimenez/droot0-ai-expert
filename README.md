@@ -67,7 +67,7 @@ src/
 └─ types/               # Shared TypeScript types
 ```
 
-Planned supporting directories:
+Supporting directories:
 
 ```text
 prisma/                 # Prisma schema, migrations, and seed
@@ -122,19 +122,61 @@ The team works with one feature per branch and pull request:
 
 ## Environment variables
 
-Environment configuration will be added with the database and authentication foundation. Real credentials must never be committed. Keep a committed `.env.example` with variable names only.
+Real credentials must never be committed. Copy `.env.example` to `.env` and fill in the values locally.
 
-Expected server-only variables include:
+Server-only variables:
 
 ```text
 DATABASE_URL=
 DIRECT_URL=
 SUPABASE_URL=
 SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 DEEPSEEK_API_KEY=
+SEED_ADMIN_EMAIL=
+SEED_ADMIN_PASSWORD=
+SEED_ADMIN_NAME=
 ```
 
-Additional Supabase service credentials, if required for seeding, must remain server-only and must never be exposed in client code.
+`DATABASE_URL` is the transaction-pooler Supabase connection used by the application. It should include `pgbouncer=true`, `connection_limit=1`, and `sslmode=require`.
+
+`DIRECT_URL` is the session-pooler or direct connection used by Prisma migrations. It should also include `sslmode=require`.
+
+`SUPABASE_SERVICE_ROLE_KEY` is only for trusted server-side scripts and administrative operations. It must never be exposed to the browser or used in a `NEXT_PUBLIC_` variable.
+
+## Database setup
+
+After creating a Supabase project and filling in `.env`:
+
+```bash
+pnpm db:generate
+pnpm db:migrate:deploy
+pnpm db:seed
+```
+
+Use `pnpm db:migrate:deploy` to apply the existing committed migration to Supabase. Use `pnpm db:migrate` only when creating a new development migration.
+
+`pnpm db:seed` creates or updates the ADMIN account defined by the seed environment variables and initializes the default assistant configuration.
+
+Useful database commands:
+
+| Command                  | Purpose                                            |
+| ------------------------ | -------------------------------------------------- |
+| `pnpm db:generate`       | Generate Prisma Client                             |
+| `pnpm db:migrate`        | Create and apply a development migration           |
+| `pnpm db:migrate:deploy` | Apply existing migrations                          |
+| `pnpm db:seed`           | Seed the ADMIN account and assistant configuration |
+| `pnpm db:studio`         | Open Prisma Studio                                 |
+| `pnpm db:validate`       | Validate the Prisma schema                         |
+
+### Data model
+
+- `User` — application profile linked to the Supabase Auth user UUID, with `USER` or `ADMIN` role.
+- `Conversation` — owned by one user, with a title and activity timestamps.
+- `Message` — owned by one conversation, with `USER` or `ASSISTANT` role and ordered content.
+- `AssistantConfig` — singleton assistant configuration containing the system prompt, model, temperature, and token limit.
+
+Conversations cascade-delete their messages. Deleting a user cascades to their conversations. Conversation and message indexes support history ordering and ownership queries.
 
 ## Team responsibilities
 
@@ -166,8 +208,6 @@ The shared API contract is available at [`docs/api-contracts.md`](docs/api-contr
 
 The README will be expanded as the following are implemented:
 
-- Supabase setup.
-- Prisma migrations and seed data.
 - Authentication flow.
 - DeepSeek integration.
 - Testing strategy.
