@@ -133,6 +133,8 @@ SUPABASE_URL=
 SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 DEEPSEEK_API_KEY=
+DEEPSEEK_BASE_URL=
+DEEPSEEK_TIMEOUT_MS=
 SEED_ADMIN_EMAIL=
 SEED_ADMIN_PASSWORD=
 SEED_ADMIN_NAME=
@@ -221,6 +223,29 @@ Behavior:
 - Deleting a conversation cascades to its messages.
 - Mutating requests validate the request origin.
 
+## Chat API
+
+`POST /api/chat` sends a user message and returns the persisted user message plus the assistant response.
+
+```json
+{
+  "conversationId": "uuid-or-null",
+  "content": "Explain JavaScript closures."
+}
+```
+
+Behavior:
+
+- Requires an authenticated session.
+- Omitting `conversationId` creates a new conversation after a successful AI response.
+- The first message generates the conversation title.
+- The backend loads a bounded recent context and prepends the server-side system prompt.
+- DeepSeek is called only from the backend.
+- `DEEPSEEK_API_KEY` is server-only.
+- User and assistant messages are persisted together after a successful AI response.
+- AI failures persist nothing.
+- The endpoint maps provider rate limits, provider failures, and timeouts to the shared API error codes.
+
 ## Team responsibilities
 
 ### Developer 1 — Frontend and integration
@@ -251,7 +276,6 @@ The shared API contract is available at [`docs/api-contracts.md`](docs/api-contr
 
 The README will be expanded as the following are implemented:
 
-- Chat API and DeepSeek integration.
 - Testing strategy.
 - Deployment.
 - Evaluation checklist.
