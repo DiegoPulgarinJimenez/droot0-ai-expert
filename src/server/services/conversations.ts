@@ -4,7 +4,7 @@ import type { ConversationSummary, Message as MessageDto } from "@/lib/contracts
 import { prisma } from "@/server/db/prisma";
 import { ApiError } from "@/server/http/api-error";
 
-type ConversationWithMessageCount = Conversation & {
+export type ConversationWithMessageCount = Conversation & {
   _count: {
     messages: number;
   };
@@ -17,7 +17,9 @@ function notFound(): never {
   throw new ApiError(404, "NOT_FOUND", "Conversation not found.");
 }
 
-function toConversationSummary(conversation: ConversationWithMessageCount): ConversationSummary {
+export function toConversationSummary(
+  conversation: ConversationWithMessageCount,
+): ConversationSummary {
   return {
     id: conversation.id,
     title: conversation.title,
@@ -27,7 +29,7 @@ function toConversationSummary(conversation: ConversationWithMessageCount): Conv
   };
 }
 
-function toMessageDto(message: Message): MessageDto {
+export function toMessageDto(message: Message): MessageDto {
   return {
     id: message.id,
     role: message.role,
@@ -54,7 +56,10 @@ export async function listConversations(
   return conversations.map(toConversationSummary);
 }
 
-export async function getConversationDetail(userId: string, conversationId: string) {
+export async function getOwnedConversation(
+  userId: string,
+  conversationId: string,
+): Promise<ConversationWithMessageCount> {
   const conversation = await prisma.conversation.findFirst({
     where: {
       id: conversationId,
@@ -70,6 +75,12 @@ export async function getConversationDetail(userId: string, conversationId: stri
   if (!conversation) {
     notFound();
   }
+
+  return conversation;
+}
+
+export async function getConversationDetail(userId: string, conversationId: string) {
+  const conversation = await getOwnedConversation(userId, conversationId);
 
   const messages = await prisma.message.findMany({
     where: { conversationId },
