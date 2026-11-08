@@ -345,6 +345,8 @@ Coverage includes:
 
 The shared API contract is available at [`docs/api-contracts.md`](docs/api-contracts.md).
 
+The security and performance review is available at [`docs/security-review.md`](docs/security-review.md).
+
 The README will be expanded as the following are implemented:
 
 - Deployment.
