@@ -248,14 +248,16 @@ Behavior:
 
 ## Admin API
 
-| Method  | Endpoint                    | Purpose              |
-| ------- | --------------------------- | -------------------- |
-| `GET`   | `/api/admin/users`          | List all users       |
-| `PATCH` | `/api/admin/users/:id/role` | Change a user's role |
+| Method  | Endpoint                    | Purpose                        |
+| ------- | --------------------------- | ------------------------------ |
+| `GET`   | `/api/admin/users`          | List all users                 |
+| `PATCH` | `/api/admin/users/:id/role` | Change a user's role           |
+| `GET`   | `/api/admin/assistant`      | Read assistant configuration   |
+| `PUT`   | `/api/admin/assistant`      | Update assistant configuration |
 
 Behavior:
 
-- Both endpoints require the `ADMIN` role.
+- All admin endpoints require the `ADMIN` role.
 - Non-admin requests return `403 FORBIDDEN`.
 - Users are listed newest first.
 - An ADMIN cannot change their own role.
@@ -264,6 +266,17 @@ Behavior:
 - Missing users return `404 NOT_FOUND`.
 - Self-role and last-admin conflicts return `409 CONFLICT`.
 - Mutating requests validate the request origin.
+
+### Assistant configuration
+
+`GET /api/admin/assistant` returns the current system prompt, model, temperature, and token limit.
+
+`PUT /api/admin/assistant` updates those values and records the admin who made the change.
+
+- Changes affect future chat requests only.
+- Existing conversations are not rewritten.
+- Invalid values return `422 VALIDATION_ERROR`.
+- The default configuration is created automatically if it is missing.
 
 ## Team responsibilities
 
