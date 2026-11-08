@@ -246,6 +246,25 @@ Behavior:
 - AI failures persist nothing.
 - The endpoint maps provider rate limits, provider failures, and timeouts to the shared API error codes.
 
+## Admin API
+
+| Method  | Endpoint                    | Purpose              |
+| ------- | --------------------------- | -------------------- |
+| `GET`   | `/api/admin/users`          | List all users       |
+| `PATCH` | `/api/admin/users/:id/role` | Change a user's role |
+
+Behavior:
+
+- Both endpoints require the `ADMIN` role.
+- Non-admin requests return `403 FORBIDDEN`.
+- Users are listed newest first.
+- An ADMIN cannot change their own role.
+- The last remaining ADMIN cannot be demoted.
+- Invalid roles return `422 VALIDATION_ERROR`.
+- Missing users return `404 NOT_FOUND`.
+- Self-role and last-admin conflicts return `409 CONFLICT`.
+- Mutating requests validate the request origin.
+
 ## Team responsibilities
 
 ### Developer 1 — Frontend and integration
