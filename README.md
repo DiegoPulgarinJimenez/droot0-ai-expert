@@ -254,6 +254,7 @@ Behavior:
 | `PATCH` | `/api/admin/users/:id/role` | Change a user's role           |
 | `GET`   | `/api/admin/assistant`      | Read assistant configuration   |
 | `PUT`   | `/api/admin/assistant`      | Update assistant configuration |
+| `GET`   | `/api/admin/stats`          | Read application statistics    |
 
 Behavior:
 
@@ -277,6 +278,19 @@ Behavior:
 - Existing conversations are not rewritten.
 - Invalid values return `422 VALIDATION_ERROR`.
 - The default configuration is created automatically if it is missing.
+
+### Statistics
+
+`GET /api/admin/stats` returns real database statistics:
+
+- Total users.
+- Total conversations.
+- Total messages.
+- User counts by role.
+- The five most recent users.
+- The five most recently active conversations.
+
+No statistics are hardcoded or fabricated.
 
 ## Team responsibilities
 
