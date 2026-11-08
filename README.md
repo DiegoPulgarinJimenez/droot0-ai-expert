@@ -109,6 +109,8 @@ Open [http://localhost:3000](http://localhost:3000).
 | `pnpm typecheck`    | Run TypeScript without emitting files   |
 | `pnpm format`       | Format the codebase with Prettier       |
 | `pnpm format:check` | Check formatting without changing files |
+| `pnpm test`         | Run the automated test suite            |
+| `pnpm test:watch`   | Run tests in watch mode                 |
 
 ## Development workflow
 
@@ -292,6 +294,29 @@ Behavior:
 
 No statistics are hardcoded or fabricated.
 
+## Testing
+
+The backend test suite uses Vitest in a Node environment.
+
+```bash
+pnpm test
+pnpm test:watch
+```
+
+Tests do not call Supabase or DeepSeek. Prisma, authentication guards, and the AI provider are mocked.
+
+Coverage includes:
+
+- Shared request validation.
+- Safe return-path validation.
+- API error envelopes and origin checks.
+- DeepSeek success, rate-limit, provider-error, invalid-response, timeout, and missing-key behavior.
+- Conversation ownership, ordering, rename, and delete behavior.
+- Chat conversation creation, context assembly, persistence, title generation, and no-persistence-on-failure behavior.
+- Admin role changes and protection rules.
+- Statistics counts and recent-activity mapping.
+- Route-handler authentication, authorization, validation, and success responses.
+
 ## Team responsibilities
 
 ### Developer 1 — Frontend and integration
@@ -322,7 +347,6 @@ The shared API contract is available at [`docs/api-contracts.md`](docs/api-contr
 
 The README will be expanded as the following are implemented:
 
-- Testing strategy.
 - Deployment.
 - Evaluation checklist.
 
