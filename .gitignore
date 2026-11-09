@@ -35,9 +35,10 @@ yarn-error.log*
 .env*
 !.env.example
 
-# internal task plans
-/docs/developer-1-tasks.md
-/docs/developer-2-tasks.md
+# local documentation
+/docs/
+/docs/security-review.md
+/docs/api-contracts.md
 
 # vercel
 .vercel
