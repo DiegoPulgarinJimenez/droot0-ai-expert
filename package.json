@@ -13,6 +13,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "env:check": "tsx scripts/check-env.ts",
+    "verify": "pnpm env:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
