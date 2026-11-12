@@ -7,7 +7,7 @@ const serverOnlyStub = fileURLToPath(new URL("./tests/stubs/server-only.ts", imp
 export default defineConfig({
   test: {
     environment: "node",
-    include: ["tests/**/*.test.ts"],
+    include: ["tests/**/*.test.{ts,tsx}"],
     clearMocks: true,
     restoreMocks: true,
   },
