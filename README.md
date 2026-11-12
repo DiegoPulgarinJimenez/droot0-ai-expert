@@ -2,7 +2,8 @@
 
 **Course:** Web Engineering — Juan Pablo Arango  
 **Team:** Diego Ferney Pulgarín Jiménez · Bryan Giraldo Quintero  
-**Repository:** https://github.com/DiegoPulgarinJimenez/droot0-ai-expert  
+**Deploy Repository:** https://github.com/DiegoPulgarinJimenez/droot0-ai-expert  
+**Organization Repository:** https://github.com/202602-Ingeniria-Web-Udea/droot0-ai-expert.git
 **Deployment:** https://droot0-ai-expert.vercel.app/
 
 AI Expert Chat is a full-stack conversational web application built around an AI assistant specialized in programming. The project helps users understand programming concepts, explain and debug code, reason about algorithms and data structures, and improve software development practices.
